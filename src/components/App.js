@@ -30,6 +30,7 @@ export const App = () => {
         break;
       case "bad":
         setBad(prevState => prevState + 1)
+      default:
     }
     
   }
