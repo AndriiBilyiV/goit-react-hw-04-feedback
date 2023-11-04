@@ -1,37 +1,45 @@
-import { Component } from "react";
+import { useState } from "react";
 import { FeedbackOptions } from "./FeedbackOptions/FeedbackOptions";
 import { Notification } from "./Notification/Notification";
 import { Section } from "./Section/Section";
 import { Statistics } from "./Statistics/Statistics";
 
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
-  countTotalFeedback() {
-    return Object.values(this.state).reduce((prevValue, elm) => prevValue + elm)
-  };
-  countPositiveFeedbackPercentage() {
-    const total = this.countTotalFeedback();
-    return Math.round(this.state.good/total*100)
-  }
-  onLeaveFeedback = (option) => {
-    this.setState((prevState) => ({
-      [option] : prevState[option] + 1
-    }))
-  }
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  render() {
-    const total = this.countTotalFeedback()
-    const positivePercentage = this.countPositiveFeedbackPercentage()
-    const { good, neutral, bad } = this.state;
+  const countTotalFeedback = () => {
+    return (good+neutral+bad)
+  };
+
+  const total = countTotalFeedback()
+
+  const countPositiveFeedbackPercentage = () => {
+    return Math.round(good/total*100)
+  }
+  
+  const onLeaveFeedback = (option) => {
+    switch (option) {
+      case "good":
+        setGood(prevState => prevState + 1)
+        break;
+      case "neutral":
+        setNeutral(prevState => prevState + 1)
+        break;
+      case "bad":
+        setBad(prevState => prevState + 1)
+    }
+    
+  }
+    
+    const positivePercentage = countPositiveFeedbackPercentage()
+  
     return (
       <div>
         <Section title="Please leave feedback">
-          <FeedbackOptions onLeaveFeedback={this.onLeaveFeedback} options={Object.keys(this.state)}/>
+          <FeedbackOptions onLeaveFeedback={onLeaveFeedback} options={['good','neutral','bad']}/>
         </Section>
         <Section title="Statistics">
           { total > 0 ?
@@ -41,5 +49,5 @@ export class App extends Component {
         </Section>
     </div >
       )
-  }
+  
 }
